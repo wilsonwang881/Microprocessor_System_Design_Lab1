@@ -279,7 +279,22 @@ Procedures for this experiment is the same as those for the previous experiment,
 Procedures for this experiment is the same as those for the first experiment, except the following:
 
 \begin{enumerate}
-    \item 
+    \item Project is named as \textbf{Counter}.
+    
+    \item
+    
+      % \item define module difference should be addressed here.
+    
+    % \item code: the counter.v file
+    
+    % \item code: the counter.xdc file.
+    
+    % list the names of the switches
+    
+    \item To see the effect, flip on the switch that is directly below the LED that is on. All LEDs should start flashing at the same time if the correct switch is toggled.
+    
+    % explain the period used here
+    
 \end{enumerate}
 
 \newpage
@@ -312,13 +327,29 @@ The outcome is as expected. The LEDs are switched on and off in one-hot fashion 
 
 \part{Conclusion}
 
+From this lab session, I have learned how to use the \textbf{Xilinx Vivado} design suite to make hardware design and run the design on a FPGA board. I have refreshed my memory on writing Verilog by doing those three experiments.
+
+My approach was primarily based on a software-programming perspective instead of the hardware way. Each piece of Verilog code should correspond to hardware blocks that can be manufactured. Hence I ran into some issues like not using \textbf{reg} in an \textbf{always} block. Thinking from a software perspective works for this lab session but may expose vulnerabilities when it comes to large and complex hardware design. 
+
 Q: How are the user push-buttons wired on the ZYBO Z7-10 board?
 
-A:
+A: According to \href{https://reference.digilentinc.com/reference/programmable-logic/zybo-z7/reference-manual}{https://reference.digilentinc.com/reference/programmable-logic/zybo-z7/reference-manual}:
+
+% change the picture to a table, remove the picture, including information regarding whether it is pull-up or pull-down switches.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.6\textwidth]{zybo-z7-gpio.png}
+\caption{Pin layout for the buttons and switches on Zybo-Z7 board.}
+\end{figure}
+
+Edit the \textit{.xdc} file in the following format:
+
+\lstinputlisting[style={txt-style}]{xdc.txt}
 
 Q: What is the purpose of an edge detection circuit and how should it have been used in this lab?
 
-A:
+A: An edge detection circuit generates a pulse signal when its input waveform is rising or falling. The edge detector circult can be used in the counter design. In my code, there are multiple places where the \textbf{posedge} keyword is used when writing the \textbf{always} block. The edge detection circuit can be used when connecting the clock and the counter circuit, or as the connection between the counter and the jackpot circuit.
 
 \newpage
 
@@ -334,5 +365,6 @@ A:
 
 \end{appendices} 
 
+% place the code and the xdc files here for the second and the third experiment.
 
 \end{document}
