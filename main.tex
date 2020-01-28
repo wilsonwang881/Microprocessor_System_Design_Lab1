@@ -228,7 +228,7 @@ The lab consists of three experiments with increasing levels of difficulty. Only
     SWITCHES  & input     & \ding{52} & 3   & 0   \\ \midrule
     LEDS      & output    & \ding{52} & 3   & 0   \\ \bottomrule
     \end{tabular}
-    \caption{Define module.}
+    \caption{Define module for the switch-operated LED array experiment.}
     \end{table}
     
     \item A text editor field with name \textbf{switch.v} should appear, if not, click on \textbf{Flow} $\rightarrow$ \textbf{Project Manager} to open the view, then select \textbf{``switch.v''} to open the text editor. The 
@@ -260,19 +260,33 @@ Procedures for this experiment is the same as those for the previous experiment,
 \begin{enumerate}
     \item Project is named as \textbf{Counter}.
     
-    % \item define module difference should be addressed here.
+    \item Define a module with the following configuration:
     
-    % \item code: the counter.v file
+    \begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}lllll@{}}
+    \toprule
+    Port Name & Direction & Bus & MSB & LSB \\ \midrule
+    BTN0      & input     &     &     &     \\ \midrule
+    BTN1      & input     &     &     &     \\ \midrule
+    LEDS      & output    & \ding{52}    & 3   & 0   \\ \midrule
+    CLOCK     & input     &     &     &     \\ \midrule
+    RESET     & input     &     &     &     \\ \bottomrule
+    \end{tabular}
+    \caption{Define module for the button-controlled counter.}
+    \end{table}
     
-    % \item code: the counter.xdc file.
+    \item Code for \textbf{counter.v} is in Appendix \ref{appendix:verilog_counter}.
     
-    % list the names of the switches
+    \item Code for \textbf{counter.xdc} is in Appendix \ref{appendix:xdc_counter}.
     
-    \item To see the effect, keep pressing one of the two switches and notice the LEDs are acting as a counter displaying binary numbers. The period is approximately one second.
+    \item To see the effect, keep pressing one of the two switches and notice the LEDs are acting as a counter displaying binary numbers. The period is approximately one second. Clicking the reset button clears the LEDs immediately.
     
     % explain how to achieve the exactly one second counting period here.
     
 \end{enumerate}
+
+\newpage
 
 \section{Jackpot Game}
 
@@ -281,17 +295,49 @@ Procedures for this experiment is the same as those for the first experiment, ex
 \begin{enumerate}
     \item Project is named as \textbf{Counter}.
     
-    \item
+    \item Define a module called \textbf{timer} with the following configuration:
     
-      % \item define module difference should be addressed here.
+    \begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}lllll@{}}
+    \toprule
+    Port Name & Direction & Bus & MSB & LSB \\ \midrule
+    CLOCK     & input     &     &     &     \\ \midrule
+    RESET     & input     &     &     &     \\ \midrule
+    Signal    & output    &     &     &     \\ \bottomrule
+    \end{tabular}
+    \caption{Define module for the \textbf{timer} module.}
+    \end{table}
     
-    % \item code: the counter.v file
+    \item Code for \textbf{timer.v} is in Appendix \ref{appendix:verilog_timer}. It is used to generate a signal approximately one second. A faster switching speed is possible by changing the initial value of \textbf{Add} and by changing the value of \textbf{Add} after it overflows in the first \textbf{if} statement from the \textbf{always} block. For example:
+    \begin{lstlisting}[style={verilog-style}]
+    reg [26:0] Add = 27'b000000000000000001000000000;
+    ...
+    Add <= 27'b000000000000000001000000000;
+    \end{lstlisting}
     
-    % \item code: the counter.xdc file.
+    \item Define a module called \textbf{jackpot} with the following configuration
+    
+    \begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}lllll@{}}
+    \toprule
+    Port Name & Direction & Bus & MSB & LSB \\ \midrule
+    SWITCHES  & input     & \ding{52}    & 3   & 0   \\ \midrule
+    LEDS      & output    & \ding{52}    & 3   & 0   \\ \midrule
+    CLOCK     & input     &     &     &     \\ \midrule
+    RESET     & input     &     &     &     \\ \bottomrule
+    \end{tabular}
+    \caption{Define module for the \textbf{jackpot} module.}
+    \end{table}
+    
+    \item Code for the \textbf{jackpot.v} file is in Appendix \ref{appendix:verilog_jackpot}. The file uses the module defined in \textbf{timer.v}.
+    
+    \item Code for the \textbf{jackpot.xdc} is in Appendix \ref{appendix:xdc_jackpot}.
     
     % list the names of the switches
     
-    \item To see the effect, flip on the switch that is directly below the LED that is on. All LEDs should start flashing at the same time if the correct switch is toggled.
+    \item To see the effect, flip on the switch that is directly below the LED that is on. All LEDs should start flashing at the same time if the correct switch is toggled. Pressing the reset button resets the LEDs to one-hot flashing state and the player can re-play the game.
     
     % explain the period used here
     
@@ -307,21 +353,19 @@ The outcome is as expected. When flipping the switch, an LED corresponding to th
 
 % add a picture here
 
-% add the simulation results here
-
 \section{Button-Controlled Counter}
 
 % specify the names of the buttons here
 
 % double check the conditions, i.e. down-counting from 0 will not result in 1111
 
-The outcome is as expected. When pressing the button for up counter, the binary number represented by the LEDs counts up and vice versa. When the LEDs are all on, representing a binary number of 0'b1111, pressing the up-counting button results in a counting cycle starting from 0. The counter has a capacity of 4 bits and when it overflows, it restarts from 0. When all the LEDs are off, representing a binary number of 0'b0000, pressing the down-counting button will not switch on or off any LEDs. Down-counting from 0 yields 0.
+The outcome is as expected. When pressing the button for up counter, the binary number represented by the LEDs counts up and vice versa. When the LEDs are all on, representing a binary number of 0'b1111, pressing the up-counting button results in a counting cycle starting from 0. The counter has a capacity of 4 bits and when it overflows, it restarts from 0. When all the LEDs are off, representing a binary number of 0'b0000, pressing the down-counting button will turn on all the LEDs, resulting in a binary number of 0'b1111. Clicking on the reset button switches off all the LEDs immediately.
 
 \section{Jackpot Game}
 
 % alter the speed of the one-hot fashion switching of the LEDs
 
-The outcome is as expected. The LEDs are switched on and off in one-hot fashion at a constant interval. When all LEDs are switched on once, a new cycle starts from the first LED that is switched on. While LEDs are being switch on and off, flipping the switch that corresponds to the on-state LED ends the game. After the game ends, all LEDs are turned on and off at the same time, indicating a winning situation has been reached. Flipping the switch after winning the game does not change anything. The player cannot win the game by turning on multiple switches.
+The outcome is as expected. The LEDs are switched on and off in one-hot fashion at a constant interval. When all LEDs are switched on once, a new cycle starts from the first LED that is switched on. While LEDs are being switch on and off, flipping the switch that corresponds to the on-state LED ends the game. After the game ends, all LEDs are turned on and off at the same time, indicating a winning situation has been reached. Flipping the switch after winning the game does not change anything. The player cannot win the game by turning on multiple switches. The player can reset the game by long-pressing the reset button.
 
 \newpage
 
@@ -335,13 +379,18 @@ Q: How are the user push-buttons wired on the ZYBO Z7-10 board?
 
 A: According to \href{https://reference.digilentinc.com/reference/programmable-logic/zybo-z7/reference-manual}{https://reference.digilentinc.com/reference/programmable-logic/zybo-z7/reference-manual}:
 
-% change the picture to a table, remove the picture, including information regarding whether it is pull-up or pull-down switches.
-
-\begin{figure}[ht]
+\begin{table}[ht]
 \centering
-\includegraphics[width=0.6\textwidth]{zybo-z7-gpio.png}
-\caption{Pin layout for the buttons and switches on Zybo-Z7 board.}
-\end{figure}
+\begin{tabular}{@{}cc@{}}
+\toprule
+Button Name & Port/Pin Number \\ \midrule
+BTN0        & K18  \\ \midrule
+BTN1        & P16  \\ \midrule
+BTN2        & K19  \\ \midrule
+BTN3        & Y16  \\ \bottomrule
+\end{tabular}
+\caption{Push-button connections on ZYBO Z7-10 board.}
+\end{table}
 
 Edit the \textit{.xdc} file in the following format:
 
@@ -349,7 +398,7 @@ Edit the \textit{.xdc} file in the following format:
 
 Q: What is the purpose of an edge detection circuit and how should it have been used in this lab?
 
-A: An edge detection circuit generates a pulse signal when its input waveform is rising or falling. The edge detector circult can be used in the counter design. In my code, there are multiple places where the \textbf{posedge} keyword is used when writing the \textbf{always} block. The edge detection circuit can be used when connecting the clock and the counter circuit, or as the connection between the counter and the jackpot circuit.
+A: An edge detection circuit generates a pulse signal when its input waveform is rising or falling. The edge detector circult can be used in the counter design. In my code, there are multiple places where the \textbf{posedge} keyword is used when writing the \textbf{always} block.
 
 \newpage
 
@@ -362,6 +411,26 @@ A: An edge detection circuit generates a pulse signal when its input waveform is
 \section{switch.xdc}
 \label{appendix:xdc_switch}
 \lstinputlisting[style={txt-style}]{switch_xdc.txt}
+
+\section{counter.v}
+\label{appendix:verilog_counter}
+\lstinputlisting[style={verilog-style}]{counter.v}
+
+\section{counter.xdc}
+\label{appendix:xdc_counter}
+\lstinputlisting[style={txt-style}]{counter_xdc.txt}
+
+\section{timer.v}
+\label{appendix:verilog_timer}
+\lstinputlisting[style={verilog-style}]{Lab_1_3_Counter.v}
+
+\section{jackpot.v}
+\label{appendix:verilog_jackpot}
+\lstinputlisting[style={verilog-style}]{jackpot.v}
+
+\section{jackpot.xdc}
+\label{appendix:xdc_jackpot}
+\lstinputlisting[style={txt-style}]{counter_module_xdc.txt}
 
 \end{appendices} 
 
